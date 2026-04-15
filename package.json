@@ -4,8 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "author": {
-    "name": "Hỏi Dân IT vs Eric",
-    "url": "https://hoidanit.com.vn"
+    "name": "Phung Anh Van"
   },
   "scripts": {
     "dev": "vite",
