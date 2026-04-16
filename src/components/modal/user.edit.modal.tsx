@@ -3,13 +3,53 @@ import Modal from 'react-bootstrap/Modal';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import Spinner from 'react-bootstrap/esm/Spinner';
 
-const UserEditModal = (props: any) => {
+interface IUser {
+    id: string;
+    email: string;
+    name: string;
+}
+
+interface IProps {
+    isOpenUpdateModal: boolean;
+    setIsOpenUpdateModal: (isOpen: boolean) => void;
+    dataUser: IUser | null;
+}
+const UserEditModal = (props: IProps) => {
+    const queryClient = useQueryClient();
+
     const { isOpenUpdateModal, setIsOpenUpdateModal, dataUser } = props;
-    const [id, setId] = useState();
+    const [id, setId] = useState<string | null>(null);
 
     const [email, setEmail] = useState<string>("");
     const [name, setName] = useState<string>("");
+
+    const mutation = useMutation({
+        mutationFn: async (payload: IUser) => {
+            const res = await fetch(`http://localhost:8000/users/${payload.id}`, {
+                method: "PUT",
+                body: JSON.stringify({
+                    email: payload.email,
+                    name: payload.name,
+                }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            return res.json();
+        },
+        onSuccess: () => {
+            // data, variables, context
+            toast('🦄 Wow so easy! Update succeed');
+            setIsOpenUpdateModal(false);
+            setEmail("");
+            setName("");
+            queryClient.invalidateQueries({ queryKey: ['fetchUsers'] });
+        }
+    })
 
     useEffect(() => {
         if (dataUser?.id) {
@@ -29,7 +69,9 @@ const UserEditModal = (props: any) => {
             alert("name empty");
             return;
         }
-        console.log({ email, name, id })
+        if(id){
+            mutation.mutate({ email, name, id: id as string });
+        }
     }
 
     return (
@@ -66,10 +108,26 @@ const UserEditModal = (props: any) => {
                     </FloatingLabel>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button
-                        variant='warning'
-                        onClick={() => setIsOpenUpdateModal(false)} className='mr-2'>Cancel</Button>
-                    <Button onClick={() => handleSubmit()}>Confirm</Button>
+                    {!mutation.isPending ? (
+                        <>
+                            <Button
+                                variant='warning'
+                                onClick={() => setIsOpenUpdateModal(false)} className='mr-2'>Cancel</Button>
+                            <Button onClick={() => handleSubmit()}>Confirm</Button>
+                        </>
+                    ) : (
+                        <Button variant="primary" disabled>
+                            <Spinner
+                                as="span"
+                                animation="border"
+                                size="sm"
+                                role="status"
+                                aria-hidden="true"
+                            />
+                            <></> Updating...
+                        </Button>
+
+                    )}
                 </Modal.Footer>
             </Modal>
         </>

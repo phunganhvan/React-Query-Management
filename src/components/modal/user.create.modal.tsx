@@ -33,7 +33,8 @@ const UserCreateModal = (props: IProps) => {
             });
             return res.json();
         },
-        onSuccess: (data, variables, context) => {
+        onSuccess: () => {
+            // data, variables, context
             toast('🦄 Wow so easy! Create succeed');
             setIsOpenCreateModal(false);
             setEmail("");
