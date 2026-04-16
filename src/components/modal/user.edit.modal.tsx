@@ -69,7 +69,7 @@ const UserEditModal = (props: IProps) => {
             alert("name empty");
             return;
         }
-        if(id){
+        if (id) {
             mutation.mutate({ email, name, id: id as string });
         }
     }

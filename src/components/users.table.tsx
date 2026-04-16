@@ -93,7 +93,7 @@ function UsersTable() {
     })
 
     const { isPending, error, data: users } = useQuery({
-        queryKey: ['fetchUser', currentPage],
+        queryKey: ['fetchUsers', currentPage],
         queryFn: (): Promise<IUser[]> =>
             fetch(`http://localhost:8000/users?_page=${currentPage}&_limit=${PAGE_SIZE}`).then((res) =>
             {
