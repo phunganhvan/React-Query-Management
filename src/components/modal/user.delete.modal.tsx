@@ -1,11 +1,44 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Button from 'react-bootstrap/Button';
+import Spinner from 'react-bootstrap/esm/Spinner';
 import Modal from 'react-bootstrap/Modal';
+import { toast } from 'react-toastify';
 
-const UserDeleteModal = (props: any) => {
+interface IUser {
+    id: string;
+    email: string;
+}
+interface IProps {
+    dataUser: Partial<IUser>;
+    isOpenDeleteModal: boolean;
+    setIsOpenDeleteModal: (isOpen: boolean) => void;
+}
+const UserDeleteModal = (props: IProps) => {
     const { dataUser, isOpenDeleteModal, setIsOpenDeleteModal } = props;
+    const queryClient = useQueryClient();
+    
+    const mutation = useMutation({
+        mutationFn: async (payload: IUser) => {
+            const res = await fetch(`http://localhost:8000/users/${payload.id}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": " application/json"
+                }
+            })
+            return res.json();
+        },
+        onSuccess: () => {
+            // data, variables, context
+            toast('🦄 Wow so easy! Delete succeed');
+            setIsOpenDeleteModal(false);
+            queryClient.invalidateQueries({ queryKey: ['fetchUsers'] });
+        }
+    })
 
     const handleSubmit = () => {
-        console.log({ id: dataUser?.id });
+        if (dataUser?.id) {
+            mutation.mutate({ id: dataUser.id, email: dataUser.email ?? "" });
+        }
     }
 
     return (
@@ -25,10 +58,28 @@ const UserDeleteModal = (props: any) => {
                 Delete the user: {dataUser?.email ?? ""}
             </Modal.Body>
             <Modal.Footer>
-                <Button
-                    variant='warning'
-                    onClick={() => setIsOpenDeleteModal(false)} className='mr-2'>Cancel</Button>
-                <Button onClick={() => handleSubmit()}>Confirm</Button>
+                {!mutation.isPending ? (
+                    <>
+                        <Button
+                            variant='warning'
+                            onClick={() => setIsOpenDeleteModal(false)} className='mr-2'
+                        >
+                            Cancel
+                        </Button>
+                        <Button onClick={() => handleSubmit()}>Confirm</Button>
+                    </>
+                ) : (
+                    <Button variant="primary" disabled>
+                        <Spinner
+                            as="span"
+                            animation="border"
+                            size="sm"
+                            role="status"
+                            aria-hidden="true"
+                        />
+                        <></> Deleting...
+                    </Button>
+                )}
             </Modal.Footer>
         </Modal>
     )

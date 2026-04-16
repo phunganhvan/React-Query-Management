@@ -56,7 +56,7 @@ function UsersTable() {
         setDataUser(user);
         setIsOpenDeleteModal(true);
     }
-
+    // ts-ignore
     const PopoverComponent = forwardRef((props: any, ref: any) => {
         const { id } = props;
         const { isPending, error, data } = useQuery({
