@@ -46,7 +46,7 @@ function UsersTable() {
     //         "email": "admin@gmail.com"
     //     }
     // ]
-    const PAGE_SIZE =10;
+    const PAGE_SIZE =2;
     const handleEditUser = (user: IUser) => {
         setDataUser(user);
         setIsOpenUpdateModal(true);
