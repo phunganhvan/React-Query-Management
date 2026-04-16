@@ -1,9 +1,9 @@
 import Table from 'react-bootstrap/Table';
 import { useState, forwardRef } from 'react';
 import Button from 'react-bootstrap/Button';
-import UserCreateModal from './modal/user.create.modal';
-import UserEditModal from './modal/user.edit.modal';
-import UserDeleteModal from './modal/user.delete.modal';
+import UserCreateModal from './modal/user/user.create.modal';
+import UserEditModal from './modal/user/user.edit.modal';
+import UserDeleteModal from './modal/user/user.delete.modal';
 import UsersPagination from './pagination/users.pagination';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';

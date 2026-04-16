@@ -16,7 +16,7 @@ interface IUser {
 interface IProps {
     isOpenUpdateModal: boolean;
     setIsOpenUpdateModal: (isOpen: boolean) => void;
-    dataUser: IUser | null;
+    dataUser: IUser ;
 }
 const UserEditModal = (props: IProps) => {
     const queryClient = useQueryClient();

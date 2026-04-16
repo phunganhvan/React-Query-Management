@@ -1,10 +1,10 @@
 
 import Table from 'react-bootstrap/Table';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
-import BlogCreateModal from './modal/blog.create.modal';
-import BlogEditModal from './modal/blog.edit.modal';
-import BlogDeleteModal from './modal/blog.delete.modal';
+import BlogCreateModal from './modal/blog/blog.create.modal';
+import BlogEditModal from './modal/blog/blog.edit.modal';
+import BlogDeleteModal from './modal/blog/blog.delete.modal';
 import { calculatePagesCount } from '../helper';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import BlogsPagination from './pagination/blogs.pagination';
