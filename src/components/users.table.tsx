@@ -7,7 +7,7 @@ import UserDeleteModal from './modal/user.delete.modal';
 import UsersPagination from './pagination/users.pagination';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
 interface IUser {
     id: string | number;
@@ -20,10 +20,14 @@ function UsersTable() {
     const [isOpenCreateModal, setIsOpenCreateModal] = useState<boolean>(false);
 
     const [isOpenUpdateModal, setIsOpenUpdateModal] = useState<boolean>(false);
-    const [dataUser, setDataUser] = useState<IUser | {}>({});
+    const [dataUser, setDataUser] = useState<Partial<IUser>>({});
 
     const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
 
+
+    const [currentPage, setCurrentPage] = useState<number>(1);
+
+    const [totalPages, setTotalPages] = useState<number>(1);
     // const users = [
     //     {
     //         "id": 1,
@@ -41,7 +45,7 @@ function UsersTable() {
     //         "email": "admin@gmail.com"
     //     }
     // ]
-
+    const PAGE_SIZE =2;
     const handleEditUser = (user: IUser) => {
         setDataUser(user);
         setIsOpenUpdateModal(true);
@@ -88,11 +92,19 @@ function UsersTable() {
     })
 
     const { isPending, error, data: users } = useQuery({
-        queryKey: ['fetchUser'],
+        queryKey: ['fetchUser', currentPage],
         queryFn: (): Promise<IUser[]> =>
-            fetch('http://localhost:8000/users').then((res) =>
-                res.json(),
+            fetch(`http://localhost:8000/users?_page=${currentPage}&_limit=${PAGE_SIZE}`).then((res) =>
+            {
+                const totalItems = res.headers?.get('X-Total-Count') ?? 0;
+                if (totalItems) {
+                    const totalPages = Math.ceil(Number(totalItems) / PAGE_SIZE);
+                    setTotalPages(totalPages);
+                }
+                return res.json();
+            }
             ),
+            placeholderData: keepPreviousData,
     })
 
     if (isPending) return 'Loading...'
@@ -148,7 +160,9 @@ function UsersTable() {
                 </tbody>
             </Table>
             <UsersPagination
-                totalPages={0}
+                totalPages={totalPages}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
             />
             <UserCreateModal
                 isOpenCreateModal={isOpenCreateModal}
