@@ -29,23 +29,6 @@ function UsersTable() {
     const [currentPage, setCurrentPage] = useState<number>(1);
 
     const [totalPages, setTotalPages] = useState<number>(1);
-    // const users = [
-    //     {
-    //         "id": 1,
-    //         "name": "Eric",
-    //         "email": "eric@gmail.com"
-    //     },
-    //     {
-    //         "id": 2,
-    //         "name": "Hỏi Dân IT",
-    //         "email": "hoidanit@gmail.com"
-    //     },
-    //     {
-    //         "id": 3,
-    //         "name": "Hỏi Dân IT",
-    //         "email": "admin@gmail.com"
-    //     }
-    // ]
     const PAGE_SIZE =2;
     const handleEditUser = (user: IUser) => {
         setDataUser(user);

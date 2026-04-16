@@ -16,6 +16,7 @@ function BlogsTable() {
     const [dataBlog, setDataBlog] = useState({});
 
     const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
+    
     const blogs = [
         {
             "id": 1,
