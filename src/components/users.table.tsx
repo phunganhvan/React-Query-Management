@@ -9,12 +9,18 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import { useQuery } from '@tanstack/react-query';
 
+interface IUser {
+    id: string | number;
+    name: string;
+    email: string;
+}
+
 function UsersTable() {
 
     const [isOpenCreateModal, setIsOpenCreateModal] = useState<boolean>(false);
 
     const [isOpenUpdateModal, setIsOpenUpdateModal] = useState<boolean>(false);
-    const [dataUser, setDataUser] = useState({});
+    const [dataUser, setDataUser] = useState<IUser | {}>({});
 
     const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
 
@@ -36,12 +42,12 @@ function UsersTable() {
     //     }
     // ]
 
-    const handleEditUser = (user: any) => {
+    const handleEditUser = (user: IUser) => {
         setDataUser(user);
         setIsOpenUpdateModal(true);
     }
 
-    const handleDelete = (user: any) => {
+    const handleDelete = (user: IUser) => {
         setDataUser(user);
         setIsOpenDeleteModal(true);
     }
@@ -63,8 +69,8 @@ function UsersTable() {
     })
 
     const { isPending, error, data: users } = useQuery({
-        queryKey: ['repoData'],
-        queryFn: () =>
+        queryKey: ['fetchUser'],
+        queryFn: (): Promise<IUser[]> =>
             fetch('http://localhost:8000/users').then((res) =>
                 res.json(),
             ),
@@ -91,7 +97,7 @@ function UsersTable() {
                     </tr>
                 </thead>
                 <tbody>
-                    {users?.map(user => {
+                    {users?.map((user: IUser) => {
                         return (
                             <tr key={user.id}>
                                 <OverlayTrigger trigger="click" placement="right"
