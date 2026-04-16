@@ -6,7 +6,8 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import Spinner from 'react-bootstrap/esm/Spinner';
-interface IUser { email: string; name: string }
+
+import { IUser } from '../../../interface/user.interface';
 
 interface IProps {
     isOpenCreateModal: boolean;

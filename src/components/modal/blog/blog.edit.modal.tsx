@@ -3,14 +3,55 @@ import Modal from 'react-bootstrap/Modal';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
-const BlogEditModal = (props: any) => {
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import Spinner from 'react-bootstrap/esm/Spinner';
+
+import { IBlog } from '../../../interface/blog.interface';
+
+interface IProps {
+    isOpenUpdateModal: boolean;
+    setIsOpenUpdateModal: (isOpen: boolean) => void;
+    dataBlog: IBlog;
+}
+
+
+const BlogEditModal = (props: IProps) => {
     const { isOpenUpdateModal, setIsOpenUpdateModal, dataBlog } = props;
-    const [id, setId] = useState();
+    const [id, setId] = useState<string | null>(null);
 
     const [title, setTitle] = useState<string>("");
     const [author, setAuthor] = useState<string>("");
     const [content, setContent] = useState<string>("");
+
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation({
+        mutationFn: async (payload: IBlog) => {
+            const res = await fetch(`http://localhost:8000/blogs/${payload.id}`, {
+                method: "PUT",
+                body: JSON.stringify({
+                    title: payload.title,
+                    author: payload.author,
+                    content: payload.content
+                }),
+                headers: {
+                    "Content-Type": " application/json"
+                }
+            });
+            return res.json();
+        },
+        onSuccess: () => {
+            // data, variables, context
+            toast('🦄 Wow so easy! Update succeed');
+            setIsOpenUpdateModal(false);
+            setTitle("");
+            setAuthor("");
+            setContent("");
+            queryClient.invalidateQueries({ queryKey: ['fetchBlogs'] });
+        }
+    })
 
     useEffect(() => {
         if (dataBlog?.id) {
@@ -34,7 +75,9 @@ const BlogEditModal = (props: any) => {
             alert("content empty");
             return;
         }
-        console.log({ title, author, content, id })
+        if (id) {
+            mutation.mutate({ title, author, content, id: id as string });
+        }
     }
 
     return (
@@ -80,10 +123,26 @@ const BlogEditModal = (props: any) => {
                     </FloatingLabel>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button
-                        variant='warning'
-                        onClick={() => setIsOpenUpdateModal(false)} className='mr-2'>Cancel</Button>
-                    <Button onClick={() => handleSubmit()}>Confirm</Button>
+                    {!mutation.isPending ? (
+                        <>
+                            <Button
+                                variant='warning'
+                                onClick={() => setIsOpenUpdateModal(false)} className='mr-2'>Cancel</Button>
+                            <Button onClick={() => handleSubmit()}>Confirm</Button>
+                        </>
+                    ) :
+                        (
+                            <Button variant="primary" disabled>
+                                <Spinner
+                                    as="span"
+                                    animation="border"
+                                    size="sm"
+                                    role="status"
+                                    aria-hidden="true"
+                                />
+                                <></> Updating...
+                            </Button>
+                        )}
                 </Modal.Footer>
             </Modal>
         </>

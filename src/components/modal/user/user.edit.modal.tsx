@@ -7,11 +7,7 @@ import { toast } from 'react-toastify';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Spinner from 'react-bootstrap/esm/Spinner';
 
-interface IUser {
-    id: string;
-    email: string;
-    name: string;
-}
+import { IUser } from '../../../interface/user.interface';
 
 interface IProps {
     isOpenUpdateModal: boolean;

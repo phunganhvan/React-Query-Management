@@ -4,10 +4,8 @@ import Spinner from 'react-bootstrap/esm/Spinner';
 import Modal from 'react-bootstrap/Modal';
 import { toast } from 'react-toastify';
 
-interface IUser {
-    id: string;
-    email: string;
-}
+import { IUser } from '../../../interface/user.interface';
+
 interface IProps {
     dataUser: Partial<IUser>;
     isOpenDeleteModal: boolean;

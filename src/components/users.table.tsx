@@ -10,11 +10,8 @@ import Popover from 'react-bootstrap/Popover';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { calculatePagesCount } from '../helper';
 
-interface IUser {
-    id: string | number;
-    name: string;
-    email: string;
-}
+import { IUser } from '../interface/user.interface';
+
 
 function UsersTable() {
 
