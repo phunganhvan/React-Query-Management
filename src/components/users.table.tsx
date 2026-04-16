@@ -8,6 +8,7 @@ import UsersPagination from './pagination/users.pagination';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { calculatePagesCount } from '../helper';
 
 interface IUser {
     id: string | number;
@@ -45,7 +46,7 @@ function UsersTable() {
     //         "email": "admin@gmail.com"
     //     }
     // ]
-    const PAGE_SIZE =2;
+    const PAGE_SIZE =10;
     const handleEditUser = (user: IUser) => {
         setDataUser(user);
         setIsOpenUpdateModal(true);
@@ -98,8 +99,7 @@ function UsersTable() {
             {
                 const totalItems = res.headers?.get('X-Total-Count') ?? 0;
                 if (totalItems) {
-                    const totalPages = Math.ceil(Number(totalItems) / PAGE_SIZE);
-                    setTotalPages(totalPages);
+                    setTotalPages(calculatePagesCount(PAGE_SIZE, Number(totalItems)));
                 }
                 return res.json();
             }

@@ -3,12 +3,35 @@ import Modal from 'react-bootstrap/Modal';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { useNotificationCenter } from 'react-toastify/addons/use-notification-center';
 
-const UserCreateModal = (props: any) => {
+interface IUser { email: string; name: string }
+
+interface IProps {
+    isOpenCreateModal: boolean;
+    setIsOpenCreateModal: (isOpen: boolean) => void;
+}
+const UserCreateModal = (props: IProps) => {
     const { isOpenCreateModal, setIsOpenCreateModal } = props;
 
     const [email, setEmail] = useState<string>("");
     const [name, setName] = useState<string>("");
+    const mutation = useMutation({
+        mutationFn: async (payload: IUser) => {
+            const res = await fetch("http://localhost:8000/users", {
+                method: "POST",
+                body: JSON.stringify({
+                    email: payload.email,
+                    name: payload.name
+                }),
+                headers: {
+                    "Content-Type": " application/json"
+                }
+            });
+            return res.json();
+        },
+    })
 
     const handleSubmit = () => {
         if (!email) {
@@ -20,7 +43,17 @@ const UserCreateModal = (props: any) => {
             return;
         }
         //call api => call redux
-        console.log({ email, name }) //payload
+        mutation.mutate({ email, name });
+        if(mutation.isError){
+            alert("Error: " + mutation.error.message);
+        }
+
+        if(mutation.isSuccess){
+            alert("Create user successfully");
+            setIsOpenCreateModal(false);
+            setEmail("");
+            setName("");
+        }
     }
 
     return (
