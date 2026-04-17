@@ -3,21 +3,22 @@ import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Form from 'react-bootstrap/Form';
 import { useEffect, useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+// import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useFetchUsers } from '../constant/fetch';
 
 function Header() {
-    const queryClient = useQueryClient();
+    // const queryClient = useQueryClient();
 
-    const [count, setCount] = useState<number>(0);
-    const { data } = useQuery({
-        queryKey: ['fetchUsers', 1],
-        queryFn: (): Promise<any[]> =>
-            fetch(`http://localhost:8000/users?_page=1&_limit=2`).then((res) => {
-                const totalItems = res.headers?.get('X-Total-Count') ?? 0;
-                setCount(Number(totalItems));
-                return res.json();
-            }),
-    })
+    const { count } = useFetchUsers(1);
+    // const { data } = useQuery({
+    //     queryKey: ['fetchUsers1', 1],
+    //     queryFn: (): Promise<any[]> =>
+    //         fetch(`http://localhost:8000/users?_page=1&_limit=2`).then((res) => {
+    //             const totalItems = res.headers?.get('X-Total-Count') ?? 0;
+    //             setCount(Number(totalItems));
+    //             return res.json();
+    //         }),
+    // })
     const [mode, setMode] = useState("light")
 
     useEffect(() => {

@@ -5,6 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 import { toast } from 'react-toastify';
 
 import { IUser } from '../../../interface/user.interface';
+import { QUERY_KEY } from '../../../constant/key';
 
 interface IProps {
     dataUser: Partial<IUser>;
@@ -29,7 +30,7 @@ const UserDeleteModal = (props: IProps) => {
             // data, variables, context
             toast('🦄 Wow so easy! Delete succeed');
             setIsOpenDeleteModal(false);
-            queryClient.invalidateQueries({ queryKey: ['fetchUsers'] });
+            queryClient.invalidateQueries({ queryKey: QUERY_KEY.getAllUsers() });
         }
     })
 

@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import Spinner from 'react-bootstrap/esm/Spinner';
 
 import { IUser } from '../../../interface/user.interface';
+import { QUERY_KEY } from '../../../constant/key';
 
 interface IProps {
     isOpenCreateModal: boolean;
@@ -40,7 +41,7 @@ const UserCreateModal = (props: IProps) => {
             setIsOpenCreateModal(false);
             setEmail("");
             setName("");
-            queryClient.invalidateQueries({ queryKey: ['fetchUsers'] });
+            queryClient.invalidateQueries({ queryKey: QUERY_KEY.getAllUsers() });
         }
     })
 

@@ -7,10 +7,11 @@ import UserDeleteModal from './modal/user/user.delete.modal';
 import UsersPagination from './pagination/users.pagination';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { calculatePagesCount } from '../helper';
+import { useQuery } from '@tanstack/react-query';
 
 import { IUser } from '../interface/user.interface';
+import { useFetchUsers } from '../constant/fetch';
+
 
 
 function UsersTable() {
@@ -25,8 +26,6 @@ function UsersTable() {
 
     const [currentPage, setCurrentPage] = useState<number>(1);
 
-    const [totalPages, setTotalPages] = useState<number>(1);
-    const PAGE_SIZE =2;
     const handleEditUser = (user: IUser) => {
         setDataUser(user);
         setIsOpenUpdateModal(true);
@@ -72,21 +71,8 @@ function UsersTable() {
         )
     })
 
-    const { isPending, error, data: users } = useQuery({
-        queryKey: ['fetchUsers', currentPage],
-        queryFn: (): Promise<IUser[]> =>
-            fetch(`http://localhost:8000/users?_page=${currentPage}&_limit=${PAGE_SIZE}`).then((res) =>
-            {
-                const totalItems = res.headers?.get('X-Total-Count') ?? 0;
-                if (totalItems) {
-                    setTotalPages(calculatePagesCount(PAGE_SIZE, Number(totalItems)));
-                }
-                return res.json();
-            }
-            ),
-            placeholderData: keepPreviousData,
-    })
-
+    const { isPending, error, data , totalPages } = useFetchUsers(currentPage);
+    
     if (isPending) return 'Loading...'
 
     if (error) return 'An error has occurred: ' + error.message
@@ -108,7 +94,7 @@ function UsersTable() {
                     </tr>
                 </thead>
                 <tbody>
-                    {users?.map((user: IUser) => {
+                    {data?.map((user: IUser) => {
                         return (
                             <tr key={user.id}>
                                 <OverlayTrigger trigger="click" placement="right"

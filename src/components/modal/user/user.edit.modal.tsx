@@ -8,6 +8,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Spinner from 'react-bootstrap/esm/Spinner';
 
 import { IUser } from '../../../interface/user.interface';
+import { QUERY_KEY } from '../../../constant/key';
 
 interface IProps {
     isOpenUpdateModal: boolean;
@@ -43,7 +44,7 @@ const UserEditModal = (props: IProps) => {
             setIsOpenUpdateModal(false);
             setEmail("");
             setName("");
-            queryClient.invalidateQueries({ queryKey: ['fetchUsers'] });
+            queryClient.invalidateQueries({ queryKey: QUERY_KEY.getAllUsers() });
         }
     })
 
